@@ -8,15 +8,22 @@ function setup() {
 function draw() {
   background(220);
   for (const wheel of wheels) {
-    wheel.display( mouseX, mouseY, random(100) )  
+    wheel.update() 
+    wheel.display()  
   }
 }
 
 function mousePressed() {
-  if ( mouseButton() == 'RIGHT' )
+  if ( mouseButton === RIGHT )
     wheels.push( new Wheel(mouseX, mouseY, random(100)) )  
-
+  else
   for (const wheel of wheels) {
-    wheel.display( mouseX, mouseY, random(100) )  
+    wheel.clicked()  
   }
+}
+
+function mouseReleased() {
+  for (const wheel of wheels) {
+    wheel.released()  
+  }  
 }
