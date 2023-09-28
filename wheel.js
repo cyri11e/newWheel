@@ -13,4 +13,9 @@ class Wheel {
         this.x = x 
         this.y = y 
     }
+
+    clicked(){
+        if (dist(this.x,this.y,mouseX,mouseY)<this.r) 
+        return true
+    }
 }

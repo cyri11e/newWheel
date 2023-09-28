@@ -13,5 +13,10 @@ function draw() {
 }
 
 function mousePressed() {
-  wheels.push( new Wheel(mouseX, mouseY, random(100)) )  
+  if ( mouseButton() == 'RIGHT' )
+    wheels.push( new Wheel(mouseX, mouseY, random(100)) )  
+
+  for (const wheel of wheels) {
+    wheel.display( mouseX, mouseY, random(100) )  
+  }
 }
