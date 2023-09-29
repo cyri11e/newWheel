@@ -1,0 +1,3 @@
+const TON = 1
+const DEMI_TON = 0.5
+const MAJEURE = [TON, TON, DEMI_TON, TON, TON, TON, DEMI_TON]

@@ -1,12 +1,14 @@
 let wheels =[]
 
 function setup() {
-  createCanvas(400, 400);
+  colorMode(HSB) 
+  textAlign(CENTER,CENTER)
+  createCanvas(800, 800);
 
 }
 
 function draw() {
-  background(220);
+  background(20);
   for (const wheel of wheels) {
     wheel.update() 
     wheel.display()  
@@ -15,7 +17,7 @@ function draw() {
 
 function mousePressed() {
   if ( mouseButton === RIGHT )
-    wheels.push( new Wheel(mouseX, mouseY, random(100)) )  
+    wheels.push( new Wheel(mouseX, mouseY, 300, 4, MAJEURE) )  
   else
   for (const wheel of wheels) {
     wheel.clicked()  
