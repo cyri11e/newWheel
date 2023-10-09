@@ -19,7 +19,8 @@ const INTERVALES = [{ short : 'P1', long : 'Unisson'},
                     { short : 'P8', long : 'Octave'} ]
 
 const NOTES = [ ['C','C#','D','D#','E','F','F#','G','G#','A','A#','B' ],
-                ['C','Db','D','Eb','E','F','Gb','G','Ab','A','Bb','B' ] ]
+                ['C', 'Db', 'D', 'Eb', 'E', 'F', 'Gb', 'G', 'Ab', 'A','Bb','B' ], 
+                ['Dbb','Db','Ebb','Eb','Fb','Gbb','Gb','Abb','Ab','Bbb','Bb','Cb' ]]
 
 const SHARPUS = 0
 const FLATUS = 1
