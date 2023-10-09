@@ -13,7 +13,7 @@ class Wheel {
         this.relativeScale = this.setMode(relativeScale)
         this.absoluteScale = this.getAbsoluteScale()
         this.notes = this.getNotes()
-        this.setFamille()
+        //this.setFamille()
         this.noteNames = this.getNotesNames()
         this.coords =[]
         this.selectedNotes =[]
@@ -30,7 +30,7 @@ class Wheel {
         if (nbNotes > 1) { // n a de sens qu a partir de 2 notes  
             return this.harmonise(degreTierce,nbNotes-1,listeNotes)
         } else {
-            console.log('harmonise result :'+listeNotes)
+            //console.log('harmonise result :'+listeNotes)
 
             //this.accords.push(listeNotes)
             return listeNotes
@@ -44,7 +44,7 @@ class Wheel {
          for (let degre = 0; degre < this.absoluteScale.length; degre++) {
              triade = this.harmonise(degre,2)
              tetrade = this.harmonise(degre,3)
-             console.log(triade, tetrade)
+             //console.log(triade, tetrade)
              d = (degre%7)
              this.accords.push({degre : d+1,
                                 accord : tetrade,
@@ -53,7 +53,7 @@ class Wheel {
                                 //nomAccord : this.getNomAccord(tetrade), 
                                 degreAccord : this.getDegreAccord(tetrade)})
             }            
-            console.log('getaccord result :'+tetrade)
+            //console.log('getaccord result :'+tetrade)
 
         return 
         
@@ -118,17 +118,23 @@ class Wheel {
                 return (noteName+'+').toUpperCase()
     }
 
-    setFamille(){
-        if ([2,4,7,9,11].includes(this.tonalite))
-            this.famille = 0
-        else
-            this.famille = 1      
-    }
+    // setFamille(){
+    //     if ([2,4,7,9,11].includes(this.tonalite))
+    //         this.famille = 0
+    //     else
+    //         this.famille = 1      
+    // }
 
     //recup des notes d une gamme
     getNotesNames(notes=this.notes){
-        this.setFamille()
-        return notes.map(n=>NOTES[this.famille][n%12])
+        for (let famille = 0; famille < NOTES.length; famille++) {
+            let g=notes.map(n=>NOTES[famille][n%12])
+            console.log(g)
+            if (this.checkNotes(g)) {
+                this.famille = famille
+                return g
+            }           
+        }
     }
     
     // recup d 'un seule note
@@ -218,7 +224,7 @@ class Wheel {
         // note centrale / tonalite
         fill(0, 0, 0, 0.5)
         textSize(this.r)
-        text(this.getNoteName(this.notes[0]),this.x, this.y)
+        text(this.getNoteLabel(this.notes[0]),this.x, this.y)
         textSize(this.r/4)
         text(MODES[this.mode],this.x, this.y+this.r/2)
         if (this.selectedNotes.length>1) this.intervalsShow(this.selectedNotes)        
@@ -449,5 +455,7 @@ class Wheel {
     }
 
     // recherche des tierces pour former les accords 
-
+    checkNotes(nomNotes){
+        return nomNotes.map(e=>e[0]).map((e,i,t)=>t[i]==t[i+1]).indexOf(true)==-1
+    }
 }
