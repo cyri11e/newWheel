@@ -13,12 +13,10 @@ class Wheel {
         this.relativeScale = this.setMode(relativeScale)
         this.absoluteScale = this.getAbsoluteScale()
         this.notes = this.getNotes()
-        //this.setFamille()
         this.noteNames = this.getNotesNames()
         this.coords =[]
         this.selectedNotes =[]
-        this.accords=[]
-        this.getAccords()
+        this.accords=this.getAccords()
     
     }
 
@@ -38,64 +36,35 @@ class Wheel {
     } 
 
     // rempli le tableau accords avec toutes les infos necessaires
-    getAccords(){
+    getAccord(degreIndex){
         let d,triade,tetrade =null
 
-         for (let degre = 0; degre < this.absoluteScale.length; degre++) {
-             triade = this.harmonise(degre,2)
-             tetrade = this.harmonise(degre,3)
-             //console.log(triade, tetrade)
-             d = (degre%7)
-             this.accords.push({degre : d+1,
-                                accord : tetrade,
-                                noNote : this.notes[d],
-                                nomNote : this.getNoteName(this.notes[d]%12),
-                                //nomAccord : this.getNomAccord(tetrade), 
-                                degreAccord : this.getDegreAccord(tetrade)})
-            }            
-            //console.log('getaccord result :'+tetrade)
+        triade = this.harmonise(degreIndex,2)
+        tetrade = this.harmonise(degreIndex,3)
+        d = (degreIndex%7)
 
-        return 
-        
+        return {degre : degreIndex+1,
+                accord : tetrade,
+                noNote : this.notes[degreIndex],
+                nomNote : this.getNoteName(this.notes[degreIndex]%12),
+                nomAccord : this.getNomAccord(tetrade), 
+                degreAccord : this.getDegreAccord(tetrade)}
     }
-   
+
+    getAccords(){
+        let accords =[]
+        for (let degre = 0; degre < this.absoluteScale.length; degre++) {
+            accords.push(this.getAccord(degre))
+           }    
+           return accords
+    }
 
     getNomAccord(accord){
         let noteName
         noteName = this.getNoteName(this.notes[accord[0]])
         //console.log('get nomaccord  '+ accord)
-        let tierce1 = this.intervaleNote( this.absoluteScale[accord[0]],this.absoluteScale[accord[1]] ) 
-        let tierce2 = this.intervaleNote( this.absoluteScale[accord[1]],this.absoluteScale[accord[2]] ) 
-        let quinte = this.intervaleNote( this.absoluteScale[accord[0]],this.absoluteScale[accord[2]] )  
-        let tierce3 = this.intervaleNote( this.absoluteScale[accord[2]],this.absoluteScale[accord[3]] ) 
-
-
-        // triades
-        if (accord.length = 3) {
-            if (( tierce1 == 4) && ( quinte == 7 )) // maj
-                    noteName = noteName
-            if (( tierce1 == 3) && ( quinte == 7 )) // mineur
-                    noteName = noteName+'m' 
-            if (( tierce1 == 4) && ( quinte == 8 )) // aug
-                    noteName = noteName+'+' //aug
-            if (( tierce1 == 3) && (quinte == 6))  // dim
-                    noteName = noteName+'°' //
-        } else {
-            if (accord.length = 4)
-                if ( tierce3 == 3) 
-                    if (( tierce1 == 3) && ( quinte == 7 )) // maj
-                        noteName = noteName+'7' // dom 7
-                    if (( tierce1 == 4) && ( quinte == 7 ))
-                        noteName = noteName+'M7' //MAJ 7
-                    if (( tierce1 == 3) && ( quinte == 6 )) // maj
-                        noteName = noteName+'°b5' // dom 7
-                    if (( tierce1 == 4) && ( quinte == 8 ))
-                        noteName = noteName+'+7' //MAJ 7
-        }
-
 
         return noteName
-
     }
     
     getDegreAccord(accord){
@@ -118,12 +87,6 @@ class Wheel {
                 return (noteName+'+').toUpperCase()
     }
 
-    // setFamille(){
-    //     if ([2,4,7,9,11].includes(this.tonalite))
-    //         this.famille = 0
-    //     else
-    //         this.famille = 1      
-    // }
 
     //recup des notes d une gamme
     getNotesNames(notes=this.notes){
@@ -159,13 +122,16 @@ class Wheel {
 
     getNoteLabel(note,noteType=this.noteType) {
         // nom des notes pour affichage 
-        if (noteType=='N') return this.accords[this.notes.indexOf(note)].nomNote
-        else
-        if (noteType=='D') return this.accords[this.notes.indexOf(note)].degre 
-        else
-        if (noteType=='A') return this.accords[this.notes.indexOf(note)].degreAccord 
-        else
-        if (noteType=='C') return this.accords[this.notes.indexOf(note)].nomAccord
+        if (this.accords.length>0) {
+            if (noteType=='N') return this.accords[this.notes.indexOf(note)].nomNote
+            else
+            if (noteType=='D') return this.accords[this.notes.indexOf(note)].degre 
+            else
+            if (noteType=='A') return this.accords[this.notes.indexOf(note)].degreAccord 
+            else
+            if (noteType=='C') return this.accords[this.notes.indexOf(note)].nomAccord
+        } else 
+            return this.notes.indexOf(note)
     }
 
     display(){
@@ -224,7 +190,7 @@ class Wheel {
         // note centrale / tonalite
         fill(0, 0, 0, 0.5)
         textSize(this.r)
-        text(this.getNoteLabel(this.notes[0]),this.x, this.y)
+        text(this.getNoteName(this.notes[0]),this.x, this.y)
         textSize(this.r/4)
         text(MODES[this.mode],this.x, this.y+this.r/2)
         if (this.selectedNotes.length>1) this.intervalsShow(this.selectedNotes)        
