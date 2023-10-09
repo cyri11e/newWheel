@@ -22,15 +22,12 @@ class Wheel {
 
     // renvoi un accord a partir d une note
     harmonise(degre,nbNotes,listeNotes=[degre]) {  // !! recursif !! 
-//console.log(nbNotes)
+
         let degreTierce = this.getTierce(degre)
         listeNotes.push(degreTierce)
         if (nbNotes > 1) { // n a de sens qu a partir de 2 notes  
             return this.harmonise(degreTierce,nbNotes-1,listeNotes)
         } else {
-            //console.log('harmonise result :'+listeNotes)
-
-            //this.accords.push(listeNotes)
             return listeNotes
         }
     } 
@@ -44,11 +41,12 @@ class Wheel {
         d = (degreIndex%7)
 
         return {degre : degreIndex+1,
-                accord : tetrade,
+                accord : triade,
+                tetrade : tetrade,
                 noNote : this.notes[degreIndex],
                 nomNote : this.getNoteName(this.notes[degreIndex]%12),
-                nomAccord : this.getNomAccord(tetrade), 
-                degreAccord : this.getDegreAccord(tetrade)}
+                nomAccord : this.getNomTetrade(tetrade), 
+                degreAccord : this.getDegreAccord(triade)}
     }
 
     getAccords(){
@@ -59,14 +57,54 @@ class Wheel {
            return accords
     }
 
-    getNomAccord(accord){
-        let noteName
-        noteName = this.getNoteName(this.notes[accord[0]])
-        //console.log('get nomaccord  '+ accord)
+    getNomTriade(accord){
+        let nomAccord
+        let tierce,quinte
+        nomAccord = this.getNoteName(this.notes[accord[0]])
+        tierce = this.intervaleNote( this.absoluteScale[accord[0]],this.absoluteScale[accord[1]] ) 
+        quinte = this.intervaleNote( this.absoluteScale[accord[0]],this.absoluteScale[accord[2]] ) 
 
-        return noteName
+        if ((tierce == 4) && (quinte == 7))
+            return nomAccord
+        if ((tierce == 3) && (quinte == 7))
+            return nomAccord+'m'
+        if ((tierce == 3) && (quinte == 6))
+            return nomAccord+'°'
+        if ((tierce == 4) && (quinte == 7))
+            return nomAccord+'+'
+
+        return '?'
     }
-    
+   
+    getNomTetrade(accord){
+        let nomAccord
+        let tierce,quinte,septieme
+        nomAccord = this.getNoteName(this.notes[accord[0]])
+        tierce = this.intervaleNote( this.absoluteScale[accord[0]],this.absoluteScale[accord[1]] ) 
+        quinte = this.intervaleNote( this.absoluteScale[accord[0]],this.absoluteScale[accord[2]] ) 
+        septieme = this.intervaleNote( this.absoluteScale[accord[0]],this.absoluteScale[accord[3]] ) 
+        
+        console.log( tierce,quinte, septieme)
+        if ((tierce == 4) && (quinte == 7) && (septieme == 11))
+            return nomAccord+'M7'
+        if ((tierce == 4) && (quinte == 7) && (septieme == 10))
+            return nomAccord+'7'
+
+        if ((tierce == 3) && (quinte == 7) && (septieme == 11))
+            return nomAccord+'mM7'
+        if ((tierce == 3) && (quinte == 7) && (septieme == 10))
+            return nomAccord+'m7'
+
+        if ((tierce == 3) && (quinte == 6) && (septieme == 10))
+            return nomAccord+'m7b5'
+        if ((tierce == 3) && (quinte == 6) && (septieme == 9))
+            return nomAccord+'°7'
+
+        if ((tierce == 4) && (quinte == 7) && (septieme == 11))
+            return nomAccord+'+7'
+
+        return '?'
+    }
     getDegreAccord(accord){
         let noteName
         noteName = DEGRES[accord[0]%7]
@@ -327,8 +365,8 @@ class Wheel {
         this.notes = this.getNotes()
         this.noteNames = this.getNotesNames()
 
-        this.accords = []
-        this.getAccords()
+        //this.accords = []
+        this.accords=this.getAccords()
 
     }
 
