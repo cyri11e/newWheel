@@ -9,7 +9,8 @@ class Wheel {
         this.mode = mode
         this.tonalite = tonalite
         this.bpm = 120
-        this.septieme = false
+        this.isSeptieme = false
+        this.isArpege = true
         this.noteType = noteType
         this.startScale = relativeScale
         this.relativeScale = this.setMode(relativeScale)
@@ -43,10 +44,10 @@ class Wheel {
         d = (degreIndex%7)
 
         return {degre : degreIndex+1,
-                accord : this.septieme?tetrade:triade,
+                accord : this.isSeptieme?tetrade:triade,
                 noNote : this.notes[degreIndex],
                 nomNote : this.getNoteName(this.notes[degreIndex]%12),
-                nomAccord : this.getNomTetrade(this.septieme?tetrade:triade), 
+                nomAccord : this.getNomTetrade(this.isSeptieme?tetrade:triade), 
                 degreAccord : this.getDegreAccord(triade)}
     }
 
@@ -324,14 +325,14 @@ class Wheel {
         if (keyCode == 68) this.noteType='D'
         if (keyCode == 78) this.noteType='N'
         if (keyCode == 65) this.noteType='A'
-        if (keyCode == 83) this.septieme=!this.septieme
+        if (keyCode == 83) this.isSeptieme=!this.isSeptieme
+        if (keyCode == 65) this.isArpege=!this.isArpege
+        
         if ( keyCode == ENTER) {
             if ( this.selectedNotes.length > 1 )
-                //this.playNotes(this.selectedNotes.map((n)=>(this.notes[n])), 0.2)
                 this.selectedNotes.map( (note,index)=>this.playNote(this.notes[note], index*0.2))
             else
                 this.notes.map( (note,index)=>this.playNote(note, index*0.2))
-
         }
         if ( keyCode == RIGHT_ARROW) {
             this.tonalite = ((this.tonalite+1)%12)
@@ -390,26 +391,49 @@ class Wheel {
     intervaleDegre(degre1, degre2) {
         return abs(degre2-degre1)
     }
-
-
+x
     soundNote(note){       
         return midiToFreq(note+60)
     }
 
     playNote(note, delai=0) {
-        userStartAudio()           
-        son.play( this.soundNote(note), 0.3, delai, 0.1);
+        userStartAudio()     
+        console.log('note jouée '+ note )      
+        son.play( this.soundNote(note), 0.3, this.isArpege?delai:0, 0.1);
     } 
+
+    octaveIt(e,i,a,o){ 
+        
+        if (a[i-1]>a[i])
+            o++
+        return o
+    }
+
+    ascendingNotes(tabNotes){
+        let octave = 0
+        let res=[]
+        for (let i = 0; i < tabNotes.length; i++) {
+            const prec = tabNotes[i-1]
+            const suiv = tabNotes[i]
+            if (suiv<prec)
+                octave++
+            res.push(suiv+octave*12)
+        }
+       return res
+    }
 
     playNotes(notes, delai=0) {   
         let range = 4
         userStartAudio();
-        console.log('note jouée '+ notes )
+        let newNotes = this.ascendingNotes(notes)
+        console.log('notes recues '+ notes )
+        console.log('notes jouées '+ newNotes )
 
-        for (let note = 0; note < notes.length; note++) { 
-            if (NOTES[0][notes[note]] >= NOTES[0][this.tonalite] ) range--
-            if (NOTES[0][notes[note]] >= 'A' ) range++                     
-            son.play( NOTES[0][notes[note]]+range, 0.3, note*delai, 0.1)            
+        for (let numNote = 0; numNote < notes.length; numNote++) { 
+            if (NOTES[0][notes[numNote]] >= NOTES[0][this.tonalite] ) range--
+            if (NOTES[0][notes[numNote]] >= 'A' ) range++                     
+            //son.play( NOTES[0][notes[note]]+range, 0.3, note*delai, 0.1) 
+            son.play( this.soundNote(newNotes[numNote]), 0.3, this.isArpege?numNote*delai:0, 0.1);           
         }
     }  
     
@@ -431,35 +455,32 @@ class Wheel {
             return false
     }
     
-    noteSuivante(note){
-        let lettre = note[0]
-        //return String.fromCharCode((65+((lettre.charCodeAt(0)-65)+1)%7)) //String.fromCharCode(lettre.charCodeAt(0)+1)
-        let index = NOTES[this.famille].indexOf(note)
-        return  NOTES[this.famille][(index+1)%12]+(this.famille==1?'b':'#')
+    // noteSuivante(note){
+    //     let lettre = note[0]
+    //     //return String.fromCharCode((65+((lettre.charCodeAt(0)-65)+1)%7)) //String.fromCharCode(lettre.charCodeAt(0)+1)
+    //     let index = NOTES[this.famille].indexOf(note)
+    //     return  NOTES[this.famille][(index+1)%12]+(this.famille==1?'b':'#')
 
 
-    }
+    // }
 
 
-    corrigeNotes(notes){
-        let noteDepart =notes[0]
+    // corrigeNotes(notes){
+    //     let noteDepart =notes[0]
 
 
-            for (let index = 0; index < notes.length-2; index++) {
-                const note = notes[index]
-                const suivante = notes[index+1]
+    //         for (let index = 0; index < notes.length-2; index++) {
+    //             const note = notes[index]
+    //             const suivante = notes[index+1]
 
-                // recherche de note qui apparaissent deux fois
-                if ( note[0]== suivante[0]) {
-
-                    notes[index+1]=(this.noteSuivante(suivante[0]) )
-                    break  
-                } 
-            }
-         
-
-        return notes
-    }
+    //             // recherche de note qui apparaissent deux fois
+    //             if ( note[0]== suivante[0]) {
+    //                 notes[index+1]=(this.noteSuivante(suivante[0]) )
+    //                 break  
+    //             } 
+    //         }
+    //     return notes
+    // }
 
     // recherche des tierces pour former les accords 
     checkNotes(nomNotes){

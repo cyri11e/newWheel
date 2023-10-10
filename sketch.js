@@ -3,7 +3,7 @@ let wheels =[]
 function setup() {
   colorMode(HSB) 
   textAlign(CENTER,CENTER)
-  createCanvas(windowHeight, windowWidth);
+  createCanvas(windowWidth, windowHeight);
 
   // son
   son = new p5.PolySynth()
@@ -12,7 +12,7 @@ function setup() {
   son.setADSR(0.05, 0.2, 0.5, 0.5)
   reverb.process(son, 2, 5);
   reverb.drywet(0.4)
-  wheels.push( new Wheel(windowHeight/2, windowWidth/2, 200, 1, MAJEURE,1,'N') )
+  wheels.push( new Wheel(windowWidth/2, windowHeight/2, 200, 1, MAJEURE,1,'N') )
 }
 
 function draw() {
