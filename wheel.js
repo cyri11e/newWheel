@@ -8,6 +8,7 @@ class Wheel {
         this.r = r
         this.mode = mode
         this.tonalite = tonalite
+        this.bpm = 120
         this.noteType = noteType
         this.startScale = relativeScale
         this.relativeScale = this.setMode(relativeScale)
@@ -294,7 +295,11 @@ class Wheel {
                 if ( ['N','D'].includes(this.noteType))
                 this.playNote(this.notes[n])
                 else
-                this.playNotes(this.accords[n].accord.map(e=>this.notes[e]))
+                // for (let index = 0; index < this.accords[index].accord.length; index++) {
+                //     console.log('notes accord a jouer'+ this.accords[n].accord.map(e=>this.notes[e])) 
+                //     this.playNote(this.accords[n].accord.map(e=>this.notes[e])[index], index*0.2)
+                // }
+                this.playNotes(this.accords[n].accord.map(e=>this.notes[e]),0.25*60/this.bpm)
             }   
         }        
         // clic interval

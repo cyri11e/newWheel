@@ -24,7 +24,7 @@ function draw() {
 
 function mousePressed() {
   if ( mouseButton === RIGHT )
-    wheels.push( new Wheel(mouseX, mouseY, 300, 1, MAJEURE,1,'N') )  
+    wheels.push( new Wheel(mouseX, mouseY, 200, 1, MAJEURE,1,'N') )  
   else
   for (const wheel of wheels) {
     wheel.clicked()  
