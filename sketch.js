@@ -1,4 +1,5 @@
 let wheels =[]
+let bouton
 
 function setup() {
   colorMode(HSB) 
@@ -13,6 +14,7 @@ function setup() {
   reverb.process(son, 2, 5);
   reverb.drywet(0.4)
   wheels.push( new Wheel(windowWidth/2, windowHeight/2, 200, 1, MAJEURE,1,'N') )
+  bouton = new Bouton(10, 10 , 100)
 }
 
 function draw() {
@@ -21,6 +23,7 @@ function draw() {
     wheel.update() 
     wheel.display()  
   }
+  bouton.display()
 }
 
 function mousePressed() {
@@ -30,6 +33,7 @@ function mousePressed() {
   for (const wheel of wheels) {
     wheel.clicked()  
   }
+  bouton.clicked()
 }
 
 function mouseReleased() {

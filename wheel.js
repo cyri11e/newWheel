@@ -486,4 +486,6 @@ x
     checkNotes(nomNotes){
         return nomNotes.map(e=>e[0]).map((e,i,t)=>t[i]==t[i+1]).indexOf(true)==-1
     }
+
+    
 }
