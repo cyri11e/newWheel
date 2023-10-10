@@ -9,6 +9,7 @@ class Wheel {
         this.mode = mode
         this.tonalite = tonalite
         this.bpm = 120
+        this.septieme = false
         this.noteType = noteType
         this.startScale = relativeScale
         this.relativeScale = this.setMode(relativeScale)
@@ -42,11 +43,10 @@ class Wheel {
         d = (degreIndex%7)
 
         return {degre : degreIndex+1,
-                accord : triade,
-                tetrade : tetrade,
+                accord : this.septieme?tetrade:triade,
                 noNote : this.notes[degreIndex],
                 nomNote : this.getNoteName(this.notes[degreIndex]%12),
-                nomAccord : this.getNomTetrade(tetrade), 
+                nomAccord : this.getNomTetrade(this.septieme?tetrade:triade), 
                 degreAccord : this.getDegreAccord(triade)}
     }
 
@@ -78,6 +78,8 @@ class Wheel {
     }
    
     getNomTetrade(accord){
+        if (accord.length==3) return this.getNomTriade(accord)
+
         let nomAccord
         let tierce,quinte,septieme
         nomAccord = this.getNoteName(this.notes[accord[0]])
@@ -184,8 +186,10 @@ class Wheel {
             noFill()
             strokeWeight(1)
             stroke(0, 0, 100, 1)
+            //remplacer par cycle des quintes ou gamme chromatique
             circle(this.x, this.y, this.r*2.5 )
             circle(this.x, this.y, this.r*2.3 )
+
             noFill()
             strokeWeight(2)
             textSize(20)
@@ -197,7 +201,7 @@ class Wheel {
             fill(degre*30, 100 ,100, 1)
             strokeWeight(5)
             line(this.x, this.y, x2, y2)
-            circle(x2, y2,this.r/5)
+            circle(x2, y2,this.r/4)
             note = this.notes[index]
 
             noteName = this.getNoteLabel(note)
@@ -295,10 +299,6 @@ class Wheel {
                 if ( ['N','D'].includes(this.noteType))
                 this.playNote(this.notes[n])
                 else
-                // for (let index = 0; index < this.accords[index].accord.length; index++) {
-                //     console.log('notes accord a jouer'+ this.accords[n].accord.map(e=>this.notes[e])) 
-                //     this.playNote(this.accords[n].accord.map(e=>this.notes[e])[index], index*0.2)
-                // }
                 this.playNotes(this.accords[n].accord.map(e=>this.notes[e]),0.25*60/this.bpm)
             }   
         }        
@@ -306,10 +306,7 @@ class Wheel {
         this.coordsIntervals.forEach(coord => {
             if (dist(coord.x,coord.y,mouseX,mouseY)< (this.r/10)) {
                 console.log(coord.notes.length)
-                for (let index = 0; index < coord.notes.length; index++) {
-                    console.log('notes interval a jouer'+coord.notes) 
-                    this.playNote(coord.notes[index], index*0.2)
-                }
+                this.playNotes(coord.notes[index], 0.25*60/this.bpm)
                 //coord.notes.map((note,index)=>this.playNote(note, index*0.2))
             }   
         })
@@ -327,6 +324,7 @@ class Wheel {
         if (keyCode == 68) this.noteType='D'
         if (keyCode == 78) this.noteType='N'
         if (keyCode == 65) this.noteType='A'
+        if (keyCode == 83) this.septieme=!this.septieme
         if ( keyCode == ENTER) {
             if ( this.selectedNotes.length > 1 )
                 //this.playNotes(this.selectedNotes.map((n)=>(this.notes[n])), 0.2)
@@ -408,10 +406,10 @@ class Wheel {
         userStartAudio();
         console.log('note jouée '+ notes )
 
-        for (let note = 0; note < notes.length; note++) {        
-          if (NOTES[0][notes[note]] >= NOTES[0][this.tonalite] ) range--
-          if (NOTES[0][notes[note]] >= 'A' ) range++                     
-            son.play( NOTES[0][notes[note]]+range, 0.3, note*delai, 0.1);            
+        for (let note = 0; note < notes.length; note++) { 
+            if (NOTES[0][notes[note]] >= NOTES[0][this.tonalite] ) range--
+            if (NOTES[0][notes[note]] >= 'A' ) range++                     
+            son.play( NOTES[0][notes[note]]+range, 0.3, note*delai, 0.1)            
         }
     }  
     
