@@ -1,9 +1,37 @@
-class Bouton {
+class BoutonFlip {
+    constructor (x, y ,s, pile, face) {
+        this.x = x
+        this.y = y 
+        this.s = s
+        this.pile = pile
+        this.face = face
+        this.isPile = true
+    }
+
+    display (){
+        strokeWeight(1)
+        textSize(this.s)
+        textAlign(CENTER)
+        text(this.isPile?this.pile:this.face,this.x,this.y)
+        
+    }
+
+    
+    clicked(){
+        if (dist(this.x,this.y,mouseX,mouseY)<100) {   
+            this.isPile=!this.isPile
+            
+            return true
+        }
+    }
+}
+
+class BoutonArpege {
     constructor (x, y ,s) {
         this.x = x
         this.y = y 
         this.s = s
-        this.arpege = false
+        this.arpege = true
     }
 
     display (){
@@ -26,9 +54,10 @@ class Bouton {
     
     clicked(){
         if (dist(this.x,this.y,mouseX,mouseY)<100) {
-            console.log(keyCode)
-
+            
             this.arpege=!this.arpege
+            console.log('arpege '+this.arpege)
+            return true
         }
     }
 

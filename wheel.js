@@ -10,7 +10,9 @@ class Wheel {
         this.tonalite = tonalite
         this.bpm = 120
         this.isSeptieme = false
-        this.isArpege = true
+        this.isArpege = false
+        this.isAccord = false
+        this.isNumeric = false
         this.noteType = noteType
         this.startScale = relativeScale
         this.relativeScale = this.setMode(relativeScale)
@@ -20,7 +22,11 @@ class Wheel {
         this.coords =[]
         this.selectedNotes =[]
         this.accords=this.getAccords()
-    
+        this.btnArpege = new BoutonArpege(10,10,100)
+        this.btnSeptieme = new BoutonFlip(windowHeight-100,30,50,'tetrade','triade')
+        this.btnAccord = new BoutonFlip(50,windowWidth-10,50, 'notes','accords')
+        this.btnNumeric= new BoutonFlip(windowHeight-100,windowWidth-10,50, '123>ABC','ABC>123')
+
     }
 
     // renvoi un accord a partir d une note
@@ -177,6 +183,11 @@ class Wheel {
     }
 
     display(){
+        this.btnArpege.display()
+        this.btnSeptieme.display()
+        this.btnAccord.display()
+        this.btnNumeric.display()
+
         let note,noteName,angle1,x2,y2
         this.coords = []
         // on ne dessine que les premieres note sans la tonalite a l octave
@@ -279,6 +290,28 @@ class Wheel {
     }
 
     clicked(){
+        //if (this.btnArpege.clicked())
+        //){
+             
+             if (this.btnArpege.clicked()) {
+                this.isArpege=!this.isArpege
+             }
+             if (this.btnSeptieme.clicked()) {
+                this.isSeptieme=!this.isSeptieme
+             }
+             if (this.btnAccord.clicked()) {
+                this.isAccord=!this.isAccord
+             }
+             if (this.btnNumeric.clicked()) {
+                this.isNumeric=!this.isNumeric
+             }
+
+             if (this.isAccord&&this.isNumeric) this.noteType='C'
+             if (this.isAccord&&!this.isNumeric) this.noteType='A'
+             if (!this.isAccord&&!this.isNumeric) this.noteType='D'
+             if (!this.isAccord&&this.isNumeric) this.noteType='N'
+        //     this.isArpege=this.btnArpege.arpege
+        //}
 
         // clic centre
         if (dist(this.x,this.y,mouseX,mouseY)<this.r/6) {
@@ -307,10 +340,17 @@ class Wheel {
         this.coordsIntervals.forEach(coord => {
             if (dist(coord.x,coord.y,mouseX,mouseY)< (this.r/10)) {
                 console.log(coord.notes.length)
-                this.playNotes(coord.notes[index], 0.25*60/this.bpm)
+                this.playNotes(coord.notes, 0.25*60/this.bpm)
                 //coord.notes.map((note,index)=>this.playNote(note, index*0.2))
             }   
         })
+        this.relativeScale = this.setMode(this.startScale)
+        this.absoluteScale = this.getAbsoluteScale()
+        this.notes = this.getNotes()
+        this.noteNames = this.getNotesNames()
+
+        //this.accords = []
+        this.accords=this.getAccords()
     }
 
     released() {
@@ -321,18 +361,23 @@ class Wheel {
 
     keyPressed(){
 
-        if (keyCode == 67) this.noteType='C'
-        if (keyCode == 68) this.noteType='D'
-        if (keyCode == 78) this.noteType='N'
-        if (keyCode == 65) this.noteType='A'
+        // if (keyCode == 67) this.noteType='C'
+        // if (keyCode == 68) this.noteType='D'
+        // if (keyCode == 78) this.noteType='N'
+        // if (keyCode == 65) this.noteType='A'
         if (keyCode == 83) this.isSeptieme=!this.isSeptieme
-        if (keyCode == 65) this.isArpege=!this.isArpege
+        console.log(this.isAccord+' '+this.isNumeric)
+        if (this.isAccord&&this.isNumeric) this.noteType='C'
+        if (this.isAccord&&!this.isNumeric) this.noteType='A'
+        if (!this.isAccord&&!this.isNumeric) this.noteType='D'
+        if (!this.isAccord&&this.isNumeric) this.noteType='N'
+
         
         if ( keyCode == ENTER) {
             if ( this.selectedNotes.length > 1 )
-                this.selectedNotes.map( (note,index)=>this.playNote(this.notes[note], index*0.2))
+                this.selectedNotes.map( (note,index)=>this.playNote(this.notes[note], 0.25*60/this.bpm))
             else
-                this.notes.map( (note,index)=>this.playNote(note, index*0.2))
+                this.notes.map( (note,index)=>this.playNote(note, 0.25*60/this.bpm))
         }
         if ( keyCode == RIGHT_ARROW) {
             this.tonalite = ((this.tonalite+1)%12)
@@ -427,7 +472,7 @@ x
         userStartAudio();
         let newNotes = this.ascendingNotes(notes)
         console.log('notes recues '+ notes )
-        console.log('notes jouées '+ newNotes )
+        console.log(this.isArpege+'notes jouées '+ newNotes )
 
         for (let numNote = 0; numNote < notes.length; numNote++) { 
             if (NOTES[0][notes[numNote]] >= NOTES[0][this.tonalite] ) range--
@@ -487,5 +532,5 @@ x
         return nomNotes.map(e=>e[0]).map((e,i,t)=>t[i]==t[i+1]).indexOf(true)==-1
     }
 
-    
+
 }

@@ -14,7 +14,7 @@ function setup() {
   reverb.process(son, 2, 5);
   reverb.drywet(0.4)
   wheels.push( new Wheel(windowWidth/2, windowHeight/2, 200, 1, MAJEURE,1,'N') )
-  bouton = new Bouton(10, 10 , 100)
+  //bouton = new Bouton(10, 10 , 100)
 }
 
 function draw() {
@@ -23,17 +23,17 @@ function draw() {
     wheel.update() 
     wheel.display()  
   }
-  bouton.display()
+  //bouton.display()
 }
 
 function mousePressed() {
   if ( mouseButton === RIGHT )
-    wheels.push( new Wheel(mouseX, mouseY, 200, 1, MAJEURE,1,'N') )  
+    wheels.push( new Wheel(mouseX, mouseY, 150, 1, MAJEURE,1,'N') )  
   else
   for (const wheel of wheels) {
     wheel.clicked()  
   }
-  bouton.clicked()
+  //bouton.clicked()
 }
 
 function mouseReleased() {
