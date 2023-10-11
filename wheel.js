@@ -321,6 +321,10 @@ class Wheel {
             } else { 
                 this.dragPoint = {}                     
             }  
+            if ( this.selectedNotes.length > 1 )
+                this.playNotes(this.selectedNotes.map((note)=>this.notes[note]) , 0.25*60/this.bpm)
+            else
+                this.playNotes(this.notes, 0.25*60/this.bpm)
         }
         // clic notes
         for (const [n, coord] of this.coords.entries()) {
@@ -375,9 +379,11 @@ class Wheel {
         
         if ( keyCode == ENTER) {
             if ( this.selectedNotes.length > 1 )
-                this.selectedNotes.map( (note,index)=>this.playNote(this.notes[note], 0.25*60/this.bpm))
+                this.playNotes(this.selectedNotes.map((note)=>this.notes[note]) , 0.25*60/this.bpm)
+               //this.selectedNotes.map( (note,index)=>this.playNote(this.notes[note], 0.25*60/this.bpm))
             else
-                this.notes.map( (note,index)=>this.playNote(note, 0.25*60/this.bpm))
+                //this.notes.map( (note,index)=>this.playNote(note, 0.25*60/this.bpm))
+                this.playNotes(this.notes, 0.25*60/this.bpm)
         }
         if ( keyCode == RIGHT_ARROW) {
             this.tonalite = ((this.tonalite+1)%12)
