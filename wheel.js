@@ -10,7 +10,7 @@ class Wheel {
         this.tonalite = tonalite
         this.bpm = 120
         this.isSeptieme = false
-        this.isArpege = false
+        this.arpegeMode = 0 
         this.isAccord = false
         this.isNumeric = false
         this.noteType = noteType
@@ -294,7 +294,7 @@ class Wheel {
         //){
              
              if (this.btnArpege.clicked()) {
-                this.isArpege=!this.isArpege
+                this.arpegeMode=this.btnArpege.arpege
              }
              if (this.btnSeptieme.clicked()) {
                 this.isSeptieme=!this.isSeptieme
@@ -310,7 +310,7 @@ class Wheel {
              if (this.isAccord&&!this.isNumeric) this.noteType='A'
              if (!this.isAccord&&!this.isNumeric) this.noteType='D'
              if (!this.isAccord&&this.isNumeric) this.noteType='N'
-        //     this.isArpege=this.btnArpege.arpege
+        //     this.arpegeMode=this.btnArpege.arpege
         //}
 
         // clic centre
@@ -450,7 +450,7 @@ x
     playNote(note, delai=0) {
         userStartAudio()     
         console.log('note jouée '+ note )      
-        son.play( this.soundNote(note), 0.3, this.isArpege?delai:0, 0.1);
+        son.play( this.soundNote(note), 0.3, this.arpegeMode?delai:0, 0.1);
     } 
 
     octaveIt(e,i,a,o){ 
@@ -460,6 +460,7 @@ x
         return o
     }
 
+    // mode gamme
     ascendingNotes(tabNotes){
         let octave = 0
         let res=[]
@@ -472,19 +473,37 @@ x
         }
        return res
     }
+    descendingNotes(tabNotes){
+        let octave = 0
+        let res=[]
+        for (let i = 0; i < tabNotes.length; i++) {
+            const prec = tabNotes[i-1]
+            const suiv = tabNotes[i]
+            if (suiv<prec)
+                octave--
+            res.push(suiv)
+        }
+       return res
+    }
 
     playNotes(notes, delai=0) {   
         let range = 4
         userStartAudio();
-        let newNotes = this.ascendingNotes(notes)
+
+        let newNotes 
+        if (this.arpegeMode==0) newNotes= notes
+        if (this.arpegeMode==1) newNotes= this.ascendingNotes(notes)
+        if (this.arpegeMode==2) newNotes= this.descendingNotes(notes)
+        if (this.arpegeMode==3) newNotes= notes
+
         console.log('notes recues '+ notes )
-        console.log(this.isArpege+'notes jouées '+ newNotes )
+        console.log(this.arpegeMode+'notes jouées '+ newNotes )
 
         for (let numNote = 0; numNote < notes.length; numNote++) { 
-            if (NOTES[0][notes[numNote]] >= NOTES[0][this.tonalite] ) range--
-            if (NOTES[0][notes[numNote]] >= 'A' ) range++                     
+            //if (NOTES[0][notes[numNote]] >= NOTES[0][this.tonalite] ) range--
+            //if (NOTES[0][notes[numNote]] >= 'A' ) range++                     
             //son.play( NOTES[0][notes[note]]+range, 0.3, note*delai, 0.1) 
-            son.play( this.soundNote(newNotes[numNote]), 0.3, this.isArpege?numNote*delai:0, 0.1);           
+            son.play( this.soundNote(newNotes[numNote]), 0.3, this.arpegeMode?numNote*delai:0, 0.1);           
         }
     }  
     

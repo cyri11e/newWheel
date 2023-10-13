@@ -13,8 +13,8 @@ function setup() {
   son.setADSR(0.05, 0.2, 0.5, 0.5)
   reverb.process(son, 2, 5);
   reverb.drywet(0.4)
-  wheels.push( new Wheel(windowWidth/2, windowHeight/2, 200, 1, MAJEURE,1,'N') )
-  //bouton = new Bouton(10, 10 , 100)
+  wheels.push( new Wheel(windowWidth/2, windowHeight/2, 150, 1, MAJEURE,1,'N') )
+
 }
 
 function draw() {
@@ -23,7 +23,7 @@ function draw() {
     wheel.update() 
     wheel.display()  
   }
-  //bouton.display()
+
 }
 
 function mousePressed() {
@@ -52,6 +52,3 @@ function keyReleased() {
   }  
 }
 
-function onCanvaClic() {
-
-}
