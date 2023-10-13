@@ -473,6 +473,15 @@ x
         }
        return res
     }
+    sortedAscendingNotes(tabNotes){
+        const byValue = (a,b) => a - b;
+       return [...tabNotes].sort(byValue);
+    }
+    sortedDescendingNotes(tabNotes){
+        const byValue = (a,b) => b -a;
+       return [...tabNotes].sort(byValue);
+    }
+
     descendingNotes(tabNotes){
         let octave = 0
         let res=[]
@@ -486,14 +495,15 @@ x
        return res
     }
 
+
     playNotes(notes, delai=0) {   
         let range = 4
         userStartAudio();
 
         let newNotes 
         if (this.arpegeMode==0) newNotes= notes
-        if (this.arpegeMode==1) newNotes= this.ascendingNotes(notes)
-        if (this.arpegeMode==2) newNotes= this.descendingNotes(notes)
+        if (this.arpegeMode==1) newNotes= this.sortedAscendingNotes(notes)
+        if (this.arpegeMode==2) newNotes= this.sortedDescendingNotes(notes)
         if (this.arpegeMode==3) newNotes= notes
 
         console.log('notes recues '+ notes )
