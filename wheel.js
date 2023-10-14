@@ -25,7 +25,7 @@ class Wheel {
         this.btnArpege = new BoutonArpege(10,10,100)
         this.btnSeptieme = new BoutonFlip(windowHeight-100,30,50,'tetrade','triade')
         this.btnAccord = new BoutonFlip(50,windowWidth-10,50, 'notes','accords')
-        this.btnNumeric= new BoutonFlip(windowHeight-100,windowWidth-10,50, '123>ABC','ABC>123')
+        this.btnNumeric= new BoutonFlip(windowHeight-100,windowWidth-100,50, '123>ABC','ABC>123')
 
     }
 
