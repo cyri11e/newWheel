@@ -21,7 +21,11 @@ const INTERVALES = [{ short : 'P1', long : 'Unisson'},
 const NOTES = [ ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B' ],
                 ['C', 'Db', 'D', 'Eb', 'E', 'F', 'Gb', 'G', 'Ab', 'A', 'Bb', 'B' ], 
                 ['Dbb','Db','Ebb','Eb','Fb','Gbb','Gb','Abb','Ab','Bbb','Bb','Cb' ],
-                ['B#','C#','C##','D#','D##','E#','F#','F##','G#','G##','A#','A##' ],]
+                ['B#','C#','C##','D#','D##','E#','F#','F##','G#','G##','A#','A##' ],
+                ['DO','DO#','RE','RE#','MI','FA','FA#','SOL','SOL#','LA','LA#','SI' ],           
+                ['DO','REb','RE','MIb','MI','FA','SOLb','SOL','LAb','LA', 'SIb','SI' ],
+                ['DO','DI','RE','RI','MI','FA','FI','SO','SI','LA','LI','TI'],           
+                ['DO','RA','RE','ME','MI','FA','SE','SO','LE','LA', 'TE','TI' ] ]
 
 const SHARPUS = 0
 const FLATUS = 1

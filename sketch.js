@@ -51,4 +51,6 @@ function keyReleased() {
     wheel.keyReleased()  
   }  
 }
-
+function touchMoved(event){
+  console.log(event)
+}

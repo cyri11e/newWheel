@@ -12,21 +12,23 @@ class Wheel {
         this.isSeptieme = false
         this.arpegeMode = 0 
         this.isAccord = false
+        this.isSolfa = false
         this.isNumeric = false
         this.noteType = noteType
+        this.noteNameType = 6 // 0 =C D E F par defaut 4=solfege 6= solfa
         this.startScale = relativeScale
         this.relativeScale = this.setMode(relativeScale)
         this.absoluteScale = this.getAbsoluteScale()
+        this.solfa = this.getNotesNames(this.absoluteScale,6)
         this.notes = this.getNotes()
-        this.noteNames = this.getNotesNames()
+        this.noteNames = this.getNotesNames(this.notes,0)
         this.coords =[]
         this.selectedNotes =[]
         this.accords=this.getAccords()
         this.btnArpege = new BoutonArpege(10,10,100)
-        this.btnSeptieme = new BoutonFlip(windowHeight-100,30,50,'tetrade','triade')
-        this.btnAccord = new BoutonFlip(50,windowWidth-10,50, 'notes','accords')
-        this.btnNumeric= new BoutonFlip(windowHeight-100,windowWidth-10,50, '123>ABC','ABC>123')
-
+        this.btnAccord = new BoutonFlip(windowHeight-250,50,50, 'notes','chords')
+        this.btnNumeric= new BoutonFlip(windowHeight-250,windowWidth-50,50, '123>ABC','ABC>123')
+        this.btnModeAffichage = new BoutonXState(100,windowWidth-50,50,['CDE','DOREMI'] )
     }
 
     // renvoi un accord a partir d une note
@@ -52,7 +54,8 @@ class Wheel {
         return {degre : degreIndex+1,
                 accord : this.isSeptieme?tetrade:triade,
                 noNote : this.notes[degreIndex],
-                nomNote : this.getNoteName(this.notes[degreIndex]%12),
+                nomNote : this.getNoteName(this.notes[degreIndex]%12,0),
+                solfa : this.solfa[degreIndex],
                 nomAccord : this.getNomTetrade(this.isSeptieme?tetrade:triade), 
                 degreAccord : this.getDegreAccord(triade)}
     }
@@ -68,7 +71,7 @@ class Wheel {
     getNomTriade(accord){
         let nomAccord
         let tierce,quinte
-        nomAccord = this.getNoteName(this.notes[accord[0]])
+        nomAccord = this.getNoteName(this.notes[accord[0]],0)
         tierce = this.intervaleNote( this.absoluteScale[accord[0]],this.absoluteScale[accord[1]] ) 
         quinte = this.intervaleNote( this.absoluteScale[accord[0]],this.absoluteScale[accord[2]] ) 
 
@@ -89,7 +92,7 @@ class Wheel {
 
         let nomAccord
         let tierce,quinte,septieme
-        nomAccord = this.getNoteName(this.notes[accord[0]])
+        nomAccord = this.getNoteName(this.notes[accord[0]],0)
         tierce = this.intervaleNote( this.absoluteScale[accord[0]],this.absoluteScale[accord[1]] ) 
         quinte = this.intervaleNote( this.absoluteScale[accord[0]],this.absoluteScale[accord[2]] ) 
         septieme = this.intervaleNote( this.absoluteScale[accord[0]],this.absoluteScale[accord[3]] ) 
@@ -137,19 +140,19 @@ class Wheel {
 
 
     //recup des notes d une gamme
-    getNotesNames(notes=this.notes){
-        for (let famille = 0; famille < NOTES.length; famille++) {
+    getNotesNames(notes=this.notes, cdodo=0){
+        for (let famille = cdodo; famille < NOTES.length; famille++) {
             let g=notes.map(n=>NOTES[famille][n%12])
-            console.log(g)
+            //console.log(g)
             if (this.checkNotes(g)) {
-                this.famille = famille
+                if ( famille < 2) this.famille = famille
                 return g
             }           
         }
     }
     
     // recup d 'un seule note
-    getNoteName(note) {
+    getNoteName(note, type=0) {
         // recoit une note absolue 
         return NOTES[this.famille][note%12] 
     }
@@ -178,15 +181,18 @@ class Wheel {
             if (noteType=='A') return this.accords[this.notes.indexOf(note)].degreAccord 
             else
             if (noteType=='C') return this.accords[this.notes.indexOf(note)].nomAccord
+            else
+            if (noteType=='S') return this.accords[this.notes.indexOf(note)].solfa
+ 
         } else 
             return this.notes.indexOf(note)
     }
 
     display(){
         this.btnArpege.display()
-        this.btnSeptieme.display()
         this.btnAccord.display()
         this.btnNumeric.display()
+        this.btnModeAffichage.display()
 
         let note,noteName,angle1,x2,y2
         this.coords = []
@@ -220,8 +226,7 @@ class Wheel {
             fill(0, 0, 0, 1)
             textSize(this.r/6)
             text(noteName,x2, y2)
-            
-            
+                        
             this.coords.push(new p5.Vector(x2,y2))
             
             // selected notes 
@@ -229,8 +234,7 @@ class Wheel {
                 //console.log('selected'+index)
                 stroke(50, 0 ,100, 1-(frameCount%30)/30)
                 noFill()
-                circle(x2,y2,this.r/4+ frameCount%30)
-                
+                circle(x2,y2,this.r/4+ frameCount%30)                
             }
         }
         
@@ -245,7 +249,7 @@ class Wheel {
         // note centrale / tonalite
         fill(0, 0, 0, 0.5)
         textSize(this.r)
-        text(this.getNoteName(this.notes[0]),this.x, this.y)
+        text(this.getNoteName(this.notes[0],0),this.x, this.y)
         textSize(this.r/4)
         text(MODES[this.mode],this.x, this.y+this.r/2)
         if (this.selectedNotes.length>1) this.intervalsShow(this.selectedNotes)        
@@ -295,21 +299,30 @@ class Wheel {
              
              if (this.btnArpege.clicked()) {
                 this.arpegeMode=this.btnArpege.arpege
-             }
-             if (this.btnSeptieme.clicked()) {
-                this.isSeptieme=!this.isSeptieme
+                this.isSeptieme=this.btnArpege.nbNote==4?true:false
              }
              if (this.btnAccord.clicked()) {
                 this.isAccord=!this.isAccord
              }
              if (this.btnNumeric.clicked()) {
-                this.isNumeric=!this.isNumeric
+                this.isNumeric=this.btnNumeric.isPile
              }
+
+             
+             if  (this.btnModeAffichage.clicked()) {
+                 this.isSolfa=(this.btnModeAffichage.state==0)   
+             }
+             
+             
+             if (!this.isAccord&&!this.isNumeric) 
+                if (this.isSolfa)
+                    this.noteType='S'
+                else
+                    this.noteType='N'
 
              if (this.isAccord&&this.isNumeric) this.noteType='C'
              if (this.isAccord&&!this.isNumeric) this.noteType='A'
-             if (!this.isAccord&&!this.isNumeric) this.noteType='D'
-             if (!this.isAccord&&this.isNumeric) this.noteType='N'
+             if (!this.isAccord&&this.isNumeric) this.noteType='D'
         //     this.arpegeMode=this.btnArpege.arpege
         //}
 
@@ -334,10 +347,10 @@ class Wheel {
                 else 
                     this.selectedNotes.push(n)
 
-                if ( ['N','D'].includes(this.noteType))
-                this.playNote(this.notes[n])
+                if ( ['N','D','S'].includes(this.noteType))
+                    this.playNote(this.notes[n])
                 else
-                this.playNotes(this.accords[n].accord.map(e=>this.notes[e]),0.25*60/this.bpm)
+                    this.playNotes(this.accords[n].accord.map(e=>this.notes[e]),0.25*60/this.bpm)
             }   
         }        
         // clic interval
@@ -351,7 +364,8 @@ class Wheel {
         this.relativeScale = this.setMode(this.startScale)
         this.absoluteScale = this.getAbsoluteScale()
         this.notes = this.getNotes()
-        this.noteNames = this.getNotesNames()
+        this.noteNames = this.getNotesNames(this.notes,0)
+        this.solfa = this.getNotesNames(this.absoluteScale,6)
 
         //this.accords = []
         this.accords=this.getAccords()
@@ -373,8 +387,12 @@ class Wheel {
         console.log(this.isAccord+' '+this.isNumeric)
         if (this.isAccord&&this.isNumeric) this.noteType='C'
         if (this.isAccord&&!this.isNumeric) this.noteType='A'
-        if (!this.isAccord&&!this.isNumeric) this.noteType='D'
-        if (!this.isAccord&&this.isNumeric) this.noteType='N'
+        if (!this.isAccord&&this.isNumeric) this.noteType='D'
+        if (!this.isAccord&&!this.isNumeric) 
+            if (this.isSolfa)
+                this.noteType='S'
+            else
+                this.noteType='N'
 
         
         if ( keyCode == ENTER) {
@@ -418,8 +436,8 @@ class Wheel {
         this.relativeScale = this.setMode(this.startScale)
         this.absoluteScale = this.getAbsoluteScale()
         this.notes = this.getNotes()
-        this.noteNames = this.getNotesNames()
-
+        this.noteNames = this.getNotesNames(this.note,0)
+        this.solfa = this.getNotesNames(this.absoluteScale,6)
         //this.accords = []
         this.accords=this.getAccords()
 
@@ -442,7 +460,7 @@ class Wheel {
     intervaleDegre(degre1, degre2) {
         return abs(degre2-degre1)
     }
-x
+
     soundNote(note){       
         return midiToFreq(note+60)
     }
@@ -535,34 +553,8 @@ x
             return false
     }
     
-    // noteSuivante(note){
-    //     let lettre = note[0]
-    //     //return String.fromCharCode((65+((lettre.charCodeAt(0)-65)+1)%7)) //String.fromCharCode(lettre.charCodeAt(0)+1)
-    //     let index = NOTES[this.famille].indexOf(note)
-    //     return  NOTES[this.famille][(index+1)%12]+(this.famille==1?'b':'#')
 
-
-    // }
-
-
-    // corrigeNotes(notes){
-    //     let noteDepart =notes[0]
-
-
-    //         for (let index = 0; index < notes.length-2; index++) {
-    //             const note = notes[index]
-    //             const suivante = notes[index+1]
-
-    //             // recherche de note qui apparaissent deux fois
-    //             if ( note[0]== suivante[0]) {
-    //                 notes[index+1]=(this.noteSuivante(suivante[0]) )
-    //                 break  
-    //             } 
-    //         }
-    //     return notes
-    // }
-
-    // recherche des tierces pour former les accords 
+    // verification d une gamme 
     checkNotes(nomNotes){
         return nomNotes.map(e=>e[0]).map((e,i,t)=>t[i]==t[i+1]).indexOf(true)==-1
     }
