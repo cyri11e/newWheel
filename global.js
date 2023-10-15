@@ -1,6 +1,13 @@
 const TON = 1
 const DEMI_TON = 0.5
+const QUINTE = 3.5
 const MAJEURE = [TON, TON, DEMI_TON, TON, TON, TON, DEMI_TON]
+
+const CYCLE = [QUINTE,QUINTE,QUINTE,QUINTE,QUINTE,QUINTE,
+               QUINTE,QUINTE,QUINTE,QUINTE,QUINTE]
+const CHROMATIQUE = [DEMI_TON,DEMI_TON,DEMI_TON,DEMI_TON,DEMI_TON,DEMI_TON,
+                     DEMI_TON,DEMI_TON,DEMI_TON,DEMI_TON,DEMI_TON]
+
 const MODES =['Ionien','Dorien', 'Phrygien', 'Lydien', 'Mixolydien', 'Eolien', 'Locrien']
 const DEGRES = ['i','ii','iii','iv','v','vi','vii']
 
@@ -20,8 +27,6 @@ const INTERVALES = [{ short : 'P1', long : 'Unisson'},
 
 const NOTES = [ ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B' ],
                 ['C', 'Db', 'D', 'Eb', 'E', 'F', 'Gb', 'G', 'Ab', 'A', 'Bb', 'B' ], 
-                ['Dbb','Db','Ebb','Eb','Fb','Gbb','Gb','Abb','Ab','Bbb','Bb','Cb' ],
-                ['B#','C#','C##','D#','D##','E#','F#','F##','G#','G##','A#','A##' ],
                 ['DO','DO#','RE','RE#','MI','FA','FA#','SOL','SOL#','LA','LA#','SI' ],           
                 ['DO','REb','RE','MIb','MI','FA','SOLb','SOL','LAb','LA', 'SIb','SI' ],
                 ['DO','DI','RE','RI','MI','FA','FI','SO','SI','LA','LI','TI'],           
