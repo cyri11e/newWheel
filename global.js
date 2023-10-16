@@ -26,9 +26,9 @@ const INTERVALES = [{ short : 'P1', long : 'Unisson'},
                     { short : 'P8', long : 'Octave'} ]
 
 const NOTES = [ ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B' ],
-                ['C', 'Db', 'D', 'Eb', 'E', 'F', 'Gb', 'G', 'Ab', 'A', 'Bb', 'B' ], 
+                ['C', 'D♭', 'D', 'E♭', 'E', 'F', 'G♭', 'G', 'A♭', 'A', 'B♭', 'B' ], 
                 ['DO','DO#','RE','RE#','MI','FA','FA#','SOL','SOL#','LA','LA#','SI' ],           
-                ['DO','REb','RE','MIb','MI','FA','SOLb','SOL','LAb','LA', 'SIb','SI' ],
+                ['DO','RE♭','RE','MI♭','MI','FA','SOL♭','SOL','LA♭','LA', 'SI♭','SI' ],
                 ['DO','DI','RE','RI','MI','FA','FI','SO','SI','LA','LI','TI'],           
                 ['DO','RA','RE','ME','MI','FA','SE','SO','LE','LA', 'TE','TI' ] ]
 

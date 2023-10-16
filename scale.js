@@ -7,7 +7,7 @@ class Scale {
         this.relativeScale = this.applyMode(relativeScale,mode)
         this.absoluteScale = this.getAbsoluteScale(this.relativeScale)
         this.notes = this.getNotes(this.absoluteScale,this.tonalite)
-
+        this.noteNames = this.getNotesNames(this.notes)
     }
 
     rotateArray = (arr, k) => arr.concat(arr).slice(k, k+arr.length)
@@ -15,8 +15,7 @@ class Scale {
     applyMode(scale,mode){ 
         return this.rotateArray(scale, mode)
     }
-
-    
+   
     // etape 1 : creer la gamme absolue à partir d'une echelle relative
     getAbsoluteScale(scale) {
         let degres = [0]
@@ -37,7 +36,7 @@ class Scale {
         return nomNotes.map(e=>e[0]).map((e,i,t)=>t[i]==t[i+1]).indexOf(true)==-1
     }
 
-    getNotesNames(notes,dieseBemol=0){
+    getNotesNames(notes,dieseBemol=1){
         let noteNames =[]
 
         if (notes.length>7) {  // gamme speciale non diatoniques
@@ -53,20 +52,6 @@ class Scale {
                 noteNames.push(notes.map(n=>NOTES[1][n%12])) 
                 noteNames.push(notes.map(n=>NOTES[3][n%12])) 
             }
-
-        }
-
-
-
-        for (let famille = 0; famille < NOTES.length; famille++) {
-            let g=notes.map(n=>NOTES[famille][n%12])
-            if (notes.length<12) // diatonique
-                if (this.checkNotes(g)) {
-                    //if ( famille < 2) this.famille = famille
-                    noteNames.push(g)
-                }           
-            else 
-                noteNames.push(g)     
         }
         return noteNames
 
