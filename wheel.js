@@ -11,27 +11,36 @@ class Wheel {
     }
 
     display(){
-        let note,angle1,x2,y2
+        let note,angle,x,y
+        strokeWeight(10)
+        stroke(0, 100 ,100, 1)
+        noFill()
+        circle(this.x, this.y,2*this.r)
+
         for (let index = 0; index < this.gamme.notes.length ; index++) {
             const degre = this.gamme.notes[index];
 
-            noFill()
-            strokeWeight(2)
-            textSize(20)
-            angle1 = -HALF_PI            
-            angle1 = degre*PI/6 -HALF_PI
-            x2 = this.x+this.r*cos(angle1) 
-            y2 = this.y+this.r*sin(angle1)
-            stroke(degre*30, 100 ,100, 1)
-            fill(degre*30, 100 ,100, 1)
-            strokeWeight(5)
-            circle(x2, y2,this.r*0.4)
+            // cas des gammes completes a 12 notes
+            if (this.gamme.notes.length != 12)
+                angle = degre*PI/6 -HALF_PI
+            else
+                angle = index*PI/6 -HALF_PI
+
+            x = this.x+this.r*cos(angle) 
+            y = this.y+this.r*sin(angle)
+
+            stroke((degre*30*7)%360, 100 ,100, 1)
+            fill((degre*30*7)%360, 100 ,100, 1)
+
+            strokeWeight(1)
+            circle(x, y,this.r*0.3)
             note = this.gamme.noteNames[0][index]
             noStroke(0, 0, 0, 1)
             fill(0, 0 ,0, 1)
             textFont('Georgia')
             textSize(this.r/4)
-            this.textNote(note,x2,y2)
+            this.textNote(note,x,y)
+
                         
         }
     }
